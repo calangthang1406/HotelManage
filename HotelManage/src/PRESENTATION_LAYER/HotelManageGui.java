@@ -1,4 +1,4 @@
-package HotelManage_version1;
+package PRESENTATION_LAYER;
 
 public class HotelManageGui {
 
