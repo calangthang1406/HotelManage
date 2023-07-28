@@ -1,4 +1,4 @@
-package HotelManage_version1;
+package DOMAIN_LAYER;
 
 public class HotelManageModel {
 
