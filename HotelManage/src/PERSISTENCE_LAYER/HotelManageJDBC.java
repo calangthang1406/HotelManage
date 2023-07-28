@@ -3,9 +3,13 @@ package PERSISTENCE_LAYER;
 import DOMAIN_LAYER.model.BillHotel;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HotelManageJDBC implements HotelManageGateway {
     private Connection connection;
@@ -53,4 +57,60 @@ public class HotelManageJDBC implements HotelManageGateway {
         }
     }
 
+    @Override
+    public void deleteHoaDon(int maHD) {
+        String sql = "DELETE FROM hotelmanage WHERE maHD = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, maHD);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public BillHotel getHoaDonById(int maHoaDon) {
+        String sql = "SELECT * FROM hotelmanage WHERE maHD = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, maHoaDon);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int maHD = resultSet.getInt("maHD");
+                int maPhong = resultSet.getInt("maPhong");
+                String tenKhachHang = resultSet.getString("tenKH");
+                Date ngayHoaDon = resultSet.getDate("ngayHD");
+                double donGia = resultSet.getDouble("donGia");
+                double thanhTien = resultSet.getDouble("thanhTien");
+
+                return new BillHotel(maHD, maPhong, tenKhachHang, ngayHoaDon, donGia, thanhTien);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<BillHotel> getAllHoaDon() {
+        List<BillHotel> HoaDon = new ArrayList<>();
+        String sql = "SELECT * FROM hotelmanage";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                int maHD = resultSet.getInt("maHD");
+                int maPhong = resultSet.getInt("maPhong");
+                String tenKhachHang = resultSet.getString("tenKH");
+                Date ngayHoaDon = resultSet.getDate("ngayHD");
+                double donGia = resultSet.getDouble("donGia");
+                double thanhTien = resultSet.getDouble("donGia");
+
+                HoaDon.add(new BillHotel(maHD, maPhong, tenKhachHang, ngayHoaDon, donGia, thanhTien));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return HoaDon;
+    }
 }
